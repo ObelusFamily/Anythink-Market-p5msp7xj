@@ -29,6 +29,7 @@ var UserSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user"
     },
+    isVerified: isVerified ? true : false,
     favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Item" }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     hash: String,
@@ -75,7 +76,8 @@ UserSchema.methods.toAuthJSON = function() {
     token: this.generateJWT(),
     bio: this.bio,
     image: this.image,
-    role: this.role
+    role: this.role,
+    isVerified: this.isVerified
   };
 };
 
@@ -83,6 +85,7 @@ UserSchema.methods.toProfileJSONFor = function(user) {
   return {
     username: this.username,
     bio: this.bio,
+    isVerified: this.isVerified,
     image:
       this.image || "https://static.productionready.io/images/smiley-cyrus.jpg",
     following: user ? user.isFollowing(this._id) : false
